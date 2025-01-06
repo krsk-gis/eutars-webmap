@@ -1,6 +1,6 @@
 
         #map {
-            background-color: #ffffff
+            background-color: #000000
         }
         html, body, #map {
 			overflow: hidden;
@@ -205,7 +205,7 @@
         @media screen and (max-width: 480px) {
             .sticky-notification {
                 bottom: 500px;
-                right: 170px;
+                right: 140px;
                 font-size: 11px;
                 width: 250px;
             }
