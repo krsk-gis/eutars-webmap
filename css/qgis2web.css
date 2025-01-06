@@ -205,7 +205,7 @@
         @media screen and (max-width: 480px) {
             .sticky-notification {
                 bottom: 500px;
-                right: 140px;
+                right: 120px;
                 font-size: 11px;
                 width: 250px;
             }
@@ -295,7 +295,7 @@
             .header-content {
                 flex-direction: column;
                 align-items: flex-start;
-                padding: 1px 0;
+                padding: 1px 1px;
             }
             
             .title-group h1 {
@@ -311,3 +311,4 @@
             .logo {
                 display: none;
             }
+        }
