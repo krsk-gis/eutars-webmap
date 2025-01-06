@@ -3,14 +3,16 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="viewport" content="initial-scale=1,viewport-fit=cover,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
         <link rel="stylesheet" href="css/leaflet.css">
         <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
         <link rel="stylesheet" href="css/qgis2web.css">
         <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/MarkerCluster.css">
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css">
         <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
         <style>
         html, body, #map {
@@ -29,7 +31,7 @@
                 <img src="images/GAF_logo6.png" alt="Logo">
             </div>
             <div class="title-group">
-                <h1>EURÓPA TÁRSADALOMFÖLDRAJZA GYAKORLATI NÉVANYAG - WEBMAP</h1>
+                <h1>EURÓPA TÁRSADALOMFÖLDRAJZA GYAKORLATI NÉVANYAG WEBMAP</h1>
                 <h2>Ver. 1.2.2025</h2>
             </div>
         </div>
@@ -56,6 +58,7 @@
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
         <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
         <script src="data/Europe_InnerBorderlines_1.js"></script>
         <script src="data/EU_Admin_NUTS2_2.js"></script>
         <script src="data/EUTARS_nevanyag_GIS_3.js"></script>
@@ -335,8 +338,12 @@
                 return L.circleMarker(latlng, style_EUTARS_nevanyag_GIS_3_0(feature));
             },
         });
+        var cluster_EUTARS_nevanyag_GIS_3 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_EUTARS_nevanyag_GIS_3.addLayer(layer_EUTARS_nevanyag_GIS_3);
+
         bounds_group.addLayer(layer_EUTARS_nevanyag_GIS_3);
-        map.addLayer(layer_EUTARS_nevanyag_GIS_3);
+        cluster_EUTARS_nevanyag_GIS_3.addTo(map);
         var osmGeocoder = new L.Control.Geocoder({
             collapsed: true,
             position: 'bottomleft',
