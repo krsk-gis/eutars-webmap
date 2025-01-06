@@ -6,6 +6,7 @@
         <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <link rel="stylesheet" href="css/leaflet.css">
         <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
         <link rel="stylesheet" href="css/qgis2web.css">
@@ -19,8 +20,28 @@
             margin: 0;
         }
         </style>
-        <title></title>
+        <title>EUTARS - Névanyag</title>
     </head>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="images/GAF_logo6.png" alt="Logo">
+            </div>
+            <div class="title-group">
+                <h1>EURÓPA TÁRSADALOMFÖLDRAJZA GYAKORLATI NÉVANYAG - WEBMAP</h1>
+                <h2>Ver. 1.2.2025</h2>
+            </div>
+        </div>
+    </header>
+
+        <div class="sticky-notification">
+        <p><b>Az alábbi országok régióit is tudni kell:</b><br> ZH1: <i>Franciaország, Németország, Ausztria </i>ZH2: <i>Olaszország, Spanyolország, Románia</i></p>
+        <button class="close-button">X</button>
+    </div>
+
+    </header>
+
     <body>
         <div id="map">
         </div>
@@ -39,9 +60,24 @@
         <script src="data/EU_Admin_NUTS2_2.js"></script>
         <script src="data/EUTARS_nevanyag_GIS_3.js"></script>
         <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString' || e.target.feature.geometry.type === 'MultiLineString') {
+              highlightLayer.setStyle({
+                color: '#999999',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#999999',
+                fillOpacity: 0.6
+              });
+            }
+        }
         var map = L.map('map', {
             zoomControl:false, maxZoom:10, minZoom:3
-        }).fitBounds([[31.620441120152023,-16.209606898263587],[70.01504590014979,43.279215361218526]]);
+        }).fitBounds([[33.620060772487726,-10.509252245415206],[64.57736199176632,58.42756267397802]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
@@ -74,7 +110,7 @@
 			}
 		}
         var zoomControl = L.control.zoom({
-            position: 'topleft'
+            position: 'bottomleft'
         }).addTo(map);
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
@@ -85,7 +121,7 @@
             pane: 'pane_ESRIOcean_0',
             opacity: 1.0,
             attribution: '',
-            minZoom: 3,
+            minZoom: 1,
             maxZoom: 28,
             minNativeZoom: 0,
             maxNativeZoom: 20
@@ -93,6 +129,16 @@
         layer_ESRIOcean_0;
         map.addLayer(layer_ESRIOcean_0);
         function pop_Europe_InnerBorderlines_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
@@ -145,6 +191,16 @@
         bounds_group.addLayer(layer_Europe_InnerBorderlines_1);
         map.addLayer(layer_Europe_InnerBorderlines_1);
         function pop_EU_Admin_NUTS2_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['NUTS2NAME_ORIG'] !== null ? '<span style="font-weight: bold; font-size: larger; text-transform: uppercase;">' + autolinker.link(feature.properties['NUTS2NAME_ORIG'].toLocaleString()) + '</span>': '') + '</td>\
@@ -187,6 +243,16 @@
         bounds_group.addLayer(layer_EU_Admin_NUTS2_2);
         map.addLayer(layer_EU_Admin_NUTS2_2);
         function pop_EUTARS_nevanyag_GIS_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['NÉV'] !== null ? '<span style="font-weight: bold; font-size: larger; text-transform: uppercase;">' + autolinker.link(feature.properties['NÉV'].toLocaleString()) + '</span>' : '') + '</td>\
@@ -273,7 +339,7 @@
         map.addLayer(layer_EUTARS_nevanyag_GIS_3);
         var osmGeocoder = new L.Control.Geocoder({
             collapsed: true,
-            position: 'topleft',
+            position: 'bottomleft',
             text: 'Search',
             title: 'Testing'
         }).addTo(map);
@@ -331,5 +397,8 @@
             resetLabels([layer_EU_Admin_NUTS2_2]);
         });
         </script>
+        <script src="js/main.js"></script>
+        <script src="js/map.js"></script>
+        <script src="js/notification.js"></script>
     </body>
 </html>
