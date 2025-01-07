@@ -281,7 +281,6 @@
             color: var(--header-text);
             line-height: 1.3;
             overflow-wrap: break-word;
-            word-wrap: break-word;
         }
         
         .title-group h2 {
