@@ -190,7 +190,7 @@
         }
         
         .sticky-notification {
-            position: fixed;
+            position: absolute;
             background-color: rgba(255, 255, 255, 0.8);
             padding: 10px;
             border-radius: 5px;
@@ -202,22 +202,22 @@
             max-width: 90%;
         }
         
-        @media screen and (max-width: 480px) {
-            .sticky-notification {
-                bottom: 500px;
-                right: 105px;
-                font-size: 11px;
-                width: 250px;
-            }
-        }
-        
-        @media screen and (min-width: 481px) {
-            .sticky-notification {
-                top: 90px;
-                right: 20px;
-                width: 250px;
-            }
-        }
+	@media screen and (max-width: 480px) {
+	    .sticky-notification {
+	        top: 80px;
+	        right: 30px;
+	        font-size: 11px;
+	        width: 250px;
+	    }
+	}
+	
+	@media screen and (min-width: 481px) {
+	    .sticky-notification {
+	        top: 80px;
+	        right: 70px;
+	        width: 250px;
+	    }
+	}
         
         .close-button {
             position: absolute;
