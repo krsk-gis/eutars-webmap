@@ -2,11 +2,11 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="initial-scale=1,viewport-fit=cover,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+        
+        <!-- CSS fájlok -->
         <link rel="stylesheet" href="css/leaflet.css">
         <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
         <link rel="stylesheet" href="css/qgis2web.css">
@@ -14,39 +14,48 @@
         <link rel="stylesheet" href="css/MarkerCluster.css">
         <link rel="stylesheet" href="css/MarkerCluster.Default.css">
         <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        
         <style>
-        html, body, #map {
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            margin: 0;
-        }
-        </style>
+            html, body, #map {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            </style>
+
         <title>EUTARS - Névanyag</title>
     </head>
-
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">
-                <img src="images/GAF_logo6.png" alt="Logo">
+    <body>
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="images/GAF_logo6.png" alt="Logo">
+                </div>
+                <div class="title-group">
+                    <h1>EURÓPA TÁRSADALOMFÖLDRAJZA GYAKORLATI NÉVANYAG WEBMAP</h1>
+                    <h2>Ver. 1.5.1.2025</h2>
+                </div>
             </div>
-            <div class="title-group">
-                <h1>EURÓPA TÁRSADALOMFÖLDRAJZA GYAKORLATI NÉVANYAG WEBMAP</h1>
-                <h2>Ver. 1.4.6.2025</h2>
+            <div class="sticky-notification">
+                <p><b>Az alábbi országok régióit is tudni kell:</b><br> 
+                   ZH1: <i>Franciaország, Németország, Ausztria </i>
+                   ZH2: <i>Olaszország, Spanyolország, Románia</i>
+                </p>
+                <button class="close-button">X</button>
             </div>
-        </div>
-    </header>
 
         <div class="sticky-notification">
         <p><b>Az alábbi országok régióit is tudni kell:</b><br> ZH1: <i>Franciaország, Németország, Ausztria </i>ZH2: <i>Olaszország, Spanyolország, Románia</i></p>
         <button class="close-button">X</button>
-    </div>
+            </div>
+            
 
     </header>
 
-    <body>
-        <div id="map">
-        </div>
+
+        <div id="map"></div>
+
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
         <script src="js/L.Control.Layers.Tree.min.js"></script>
@@ -63,6 +72,8 @@
         <script src="data/EU_Admin_NUTS2_2.js"></script>
         <script src="data/EUTARS_nevanyag_GIS_3.js"></script>
         <script>
+
+            
         var highlightLayer;
         function highlightFeature(e) {
             highlightLayer = e.target;
@@ -206,7 +217,7 @@
             });
             var popupContent = '<table>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['NUTS2NAME_ORIG'] !== null ? '<span style="font-weight: bold; font-size: larger; text-transform: uppercase;">' + autolinker.link(feature.properties['NUTS2NAME_ORIG'].toLocaleString()) + '</span>': '') + '</td>\
+                        <td colspan="2">' + (feature.properties['REGIONNA_1'] !== null ? '<span style="font-weight: bold; font-size: larger; text-transform: uppercase;">' + autolinker.link(feature.properties['REGIONNA_1'].toLocaleString()) + '</span>': '') + '</td>\
                     </tr>\
                 </table>';
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
@@ -216,7 +227,7 @@
 			layer.bindPopup(content, { maxHeight: 400 });
         }
 
-        function style_EU_Admin_NUTS2_2_0() {
+        function style_EU_Admin_NUTS2_2() {
             return {
                 pane: 'pane_EU_Admin_NUTS2_2',
                 opacity: 1,
@@ -241,7 +252,7 @@
             layerName: 'layer_EU_Admin_NUTS2_2',
             pane: 'pane_EU_Admin_NUTS2_2',
             onEachFeature: pop_EU_Admin_NUTS2_2,
-            style: style_EU_Admin_NUTS2_2_0,
+            style: style_EU_Admin_NUTS2_2,
         });
         bounds_group.addLayer(layer_EU_Admin_NUTS2_2);
         map.addLayer(layer_EU_Admin_NUTS2_2);
@@ -354,6 +365,80 @@
         .className += ' fa fa-search';
         document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
         .title += 'Search for a place';
+
+
+        var filterHTML = `
+    <div class="filter-container" style="position: absolute; top: 80px; left: 20px; z-index: 1000; background: rgba(255, 255, 255, 0.9); padding: 10px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;font-size:12px;border-radius: 5px;padding:10px">
+        <form>
+            <input type="radio" name="zh-filter" value="all" checked> <b>Összes</b><br>
+            <input type="radio" name="zh-filter" value="1"> <b>ZH 1</b><br>
+            <input type="radio" name="zh-filter" value="2"> <b>ZH 2</b>
+        </form>
+    </div>
+`;
+document.body.insertAdjacentHTML('beforeend', filterHTML);
+
+// Eredeti réteg eltávolítása a térképről
+map.removeLayer(layer_EUTARS_nevanyag_GIS_3);
+cluster_EUTARS_nevanyag_GIS_3.clearLayers();
+
+// MarkerCluster létrehozása
+var markers = L.markerClusterGroup({
+    showCoverageOnHover: false,
+    spiderfyDistanceMultiplier: 2
+});
+
+// Eredeti réteg létrehozása
+var layer = L.geoJSON(json_EUTARS_nevanyag_GIS_3, {
+    pointToLayer: function(feature, latlng) {
+        return L.circleMarker(latlng, style_EUTARS_nevanyag_GIS_3_0(feature));
+    },
+    onEachFeature: pop_EUTARS_nevanyag_GIS_3
+});
+
+// Szűrő eseménykezelő
+document.querySelectorAll('input[name="zh-filter"]').forEach(function(radio) {
+    radio.addEventListener('change', function(e) {
+        markers.clearLayers();
+        
+        var filteredLayer = L.geoJSON(json_EUTARS_nevanyag_GIS_3, {
+            filter: function(feature) {
+                if (e.target.value === 'all') return true;
+                return feature.properties.ZH === e.target.value;
+            },
+            pointToLayer: function(feature, latlng) {
+                return L.circleMarker(latlng, style_EUTARS_nevanyag_GIS_3_0(feature));
+            },
+            onEachFeature: pop_EUTARS_nevanyag_GIS_3
+        });
+        
+        markers.addLayer(filteredLayer);
+    });
+});
+
+// Kezdeti állapot beállítása (összes pont)
+markers.addLayer(layer);
+map.addLayer(markers);
+
+// Radio gombok eseménykezelője
+document.querySelectorAll('input[name="zh-filter"]').forEach(function(radio) {
+    radio.addEventListener('change', function(e) {
+        markers.clearLayers();
+        layer = L.geoJSON(json_EUTARS_nevanyag_GIS_3, {
+            filter: function(feature) {
+                if (e.target.value === 'all') return true;
+                return feature.properties.ZH === e.target.value;
+            },
+            pointToLayer: function(feature, latlng) {
+                return L.circleMarker(latlng, style_EUTARS_nevanyag_GIS_3_0(feature));
+            },
+            onEachFeature: pop_EUTARS_nevanyag_GIS_3
+        });
+        markers.addLayer(layer);
+    });
+});
+
+
         map.on("zoomend", function(){
 
                 if (map.hasLayer(layer_EU_Admin_NUTS2_2)) {
@@ -375,7 +460,7 @@
                 feature: layer.feature,
                 variables: {}
             };
-            layer.bindTooltip((layer.feature.properties['NUTS2NAME_ORIG'] !== null?String('<div style="color: #323232; font-size: 9pt; font-weight: bold; font-style: italic; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['NUTS2NAME_ORIG']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_EU_Admin_NUTS2_2'});
+            layer.bindTooltip((layer.feature.properties['REGIONNA_1'] !== null?String('<div style="color: #323232; font-size: 9pt; font-weight: bold; font-style: italic; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['REGIONNA_1']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_EU_Admin_NUTS2_2'});
             labels.push(layer);
             totalMarkers += 1;
               layer.added = true;
@@ -405,5 +490,7 @@
         });
         </script>
         <script src="js/notification.js"></script>
+
+
     </body>
 </html>
